@@ -4,7 +4,7 @@
   <title><![CDATA[Ride the Camel!]]></title>
   <link href="http://Waterback.github.com/atom.xml" rel="self"/>
   <link href="http://Waterback.github.com/"/>
-  <updated>2011-12-08T10:17:00+01:00</updated>
+  <updated>2011-12-08T10:18:47+01:00</updated>
   <id>http://Waterback.github.com/</id>
   <author>
     <name><![CDATA[Martin Huber, innoq Deutschland GmbH]]></name>
@@ -112,17 +112,14 @@ connecting to them and requesting MBeans. Explaining all that would be to much a
 to see how this is done.
 
 I cut my example-code a little bit, because there&#8217;s a point in there that&#8217;s rather boring: How to select the Objectnames to check. 
-I need to connect to the MBeanServer of my &#8220;DefaultDomain&#8221;. My Jmx-Agent is configured in the spring-config like this:
+I need to connect to the MBeanServer of my &#8220;DefaultDomain&#8221;. My Jmx-Agent is configured in the spring-config like this:         <br>
 <code> 
-    
+            
     <camel:camelContext id="myCamelContext" >
             <camel:jmxAgent id="com.innoq.jmxagent" createConnector="true"  
             mbeanObjectDomainName="com.innoq" mbeanServerDefaultDomain="WebSphere"
             xmlns:camel="http://camel.apache.org/schema/spring" connectorPort="39099" 
             onlyRegisterProcessorWithCustomId="true" />                          
-            
-            ...
-            
     </camel:camelContext>                                                                                               
     
 </code>                                                                                                                             
