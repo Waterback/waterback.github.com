@@ -9,8 +9,8 @@
   <meta name="author" content="Martin Huber, innoq Deutschland GmbH">
 
   
-  <meta name="description" content="I&#8217;ve been working with Apache Camel for a year now and i am still scraping at the top of all
-the possibilities you have with Camel. In this &hellip;">
+  <meta name="description" content="Hello All, today i want to write sth new from my ongoing understanding of my work with Apache Camel.
+This time it&#8217;s not that of a big story as &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -36,7 +36,7 @@ the possibilities you have with Camel. In this &hellip;">
 
 <body    link="black" vlink="black" alink="black">
   <header role="banner"><hgroup>
-	<table width="100%" height="275" style="background-image: url(images/iStock_000015922631XSmall_xl.jpg); background-repeat:repeat-x" >
+	<table width="100%" height="275" style="background-image: url(images/iStock_000015922631XSmall_xl.jpg)" >
 		<tr>          
 			<td width="33%"></td>
 			<td align="center">
@@ -49,7 +49,7 @@ the possibilities you have with Camel. In this &hellip;">
 		<tr>
 			<td align="right" colspan="3">
 				 
-				<h2 align="center"><font color="black">or whatever... ...</font></h2>
+				<h2 align="center"><font color="black">or whatever ...</font></h2>
 				                                           
 			</td>
 		</tr>
@@ -78,6 +78,118 @@ the possibilities you have with Camel. In this &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/12/09/camel-inherit-errorhandling/">Camel: Inherit Errorhandling</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-09T00:14:00+01:00" pubdate data-updated="true">Dec 9<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Hello All,</p>
+
+<p>today i want to write sth new from my ongoing understanding of my work with Apache Camel.
+This time it&#8217;s not that of a big story as last time, but quite useful:
+Up to this point (actually a little bit in the past now) i thought when building Routes with
+Apache Camel in a org.apache.camel.RouteBuilder you have to write everything you want to configure
+in that respective configure()-method and that&#8217;s it.</p>
+
+<p>Well that&#8217;s not true&#8230;</p>
+
+<p>You may as well as call any method you like, i.e. from a class your RouteBuilder inherits from
+and Camel interprets everything as a whole configuration.</p>
+
+<p>Before some might ask: and why should that be useful - Well you could for example define some errorHandlers in that super class and make them accessible for every Camel-Route in which the errorhandling should be active, so you have to define only once but could use those errorhandling definitions in more than one RouteBuilder.</p>
+
+<pre><code>public class InboundRouter extends ErrorHandlingRouteBuilder {
+
+    @Override
+    public void configure() throws Exception {
+        super.inheritConfigure();
+
+        from(fromEndpoint)
+              .noAutoStartup()
+              .transacted()
+              .policy(required)
+              .routeId(BasicRouteBuilder.stdfromRouteId(this.componentBaseName))
+              .process(neededHeadersProcessor)
+              .to(nextstepfromRoute);
+    }
+
+}
+</code></pre>
+
+<p>And in ErrorhandlingRouteBuilder:</p>
+
+<pre><code>inheritConfigure() {
+
+    errHdlRoute = "direct:errorfwd." + cpBase;
+
+    errorHandler(deadLetterChannel(getContext().getEndpoint(errHdlRoute))
+                    .maximumRedeliveries(errHandlingParameters.getMaxRedeliver())
+                    .useOriginalMessage()
+                    .logStackTrace(false)
+                    .maximumRedeliveryDelay(errHandlingParameters.getMaxRedeliverDelay())
+                    .redeliveryDelay(errHandlingParameters.getRedeliverDelay())
+                    .backOffMultiplier(errHandlingParameters.getBackoffMultiplier())
+                    .useExponentialBackOff());
+
+    onException(PermanentError.class)
+                    .maximumRedeliveries(0)
+                    .useOriginalMessage()
+                    .handled(true)
+                    .to(errHdlRoute);
+
+    from(errHdlRoute)
+                    .routeId("errorforwarder")
+                    .process(new ErrorhandlingHeadersProcessor())
+                    .process(new ConvertErrorToJPAProcesor())
+                    .to("jpa:com.innoq.errhandling.SaveMessageStore?persistenceUnit);
+
+}
+</code></pre>
+
+<p>Ahem, don&#8217;t read too much into that errorhandling stuff itself, the configurations shown are parts, taken from my most recent project.<br>
+I promise i will come back with another post to explain my solution for errorhandling.
+I only wanted to show that every camel-configuration aspect in the above example is also considered from camel in it&#8217;s configuration process.</p>
+
+<p>As already mentioned you could build a big callstack in inherited classes or in others - it is only important to start your callstack inside the configure()-method of a RouteBuilder that gets loaded with the start of the CamelContext.</p>
+
+<p>Now, if you might say: &#8220;Hello Mr. Obvious&#8221; - sorry that i wasted your precious time.</p>
+
+<p>For me, from reading the available online docs and the Book &#8220;Camel in Action&#8221;
+(which is, by the way, a very good one and a great way to start/work with Apache Camel)
+this wasn&#8217;t so obvious to me.</p>
+
+<p>Cheers&#8230; <br/>
+Martin</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -392,6 +504,10 @@ You can learn a lot by reading the blogs of others. I won&#8217;t presume you co
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2011/12/09/camel-inherit-errorhandling/">Camel: Inherit Errorhandling</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2011/12/08/application-monitoring-with-camel/">Application-Monitoring with Camel</a>

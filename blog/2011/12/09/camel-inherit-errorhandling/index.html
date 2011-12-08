@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head >
+  <meta charset="utf-8">
+  <title>Camel: Inherit Errorhandling - Ride the Camel!</title>
+  <meta name="author" content="Martin Huber, innoq Deutschland GmbH">
+
+  
+  <meta name="description" content="Hello All, today i want to write sth new from my ongoing understanding of my work with Apache Camel.
+This time it&#8217;s not that of a big story as &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://Waterback.github.com/blog/2011/12/09/camel-inherit-errorhandling">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Ride the Camel!" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body    link="black" vlink="black" alink="black">
+  <header role="banner"><hgroup>
+	<table width="100%" height="275" style="background-image: url(images/iStock_000015922631XSmall_xl.jpg)" >
+		<tr>          
+			<td width="33%"></td>
+			<td align="center">
+	  			   <font color="black"><h1>Ride the Camel!</h1></font>
+			</td>
+			<td >
+			</td>
+		</tr>                                   
+		<tr><td height="50" colspan="3"> </tr>  
+		<tr>
+			<td align="right" colspan="3">
+				 
+				<h2 align="center"><font color="black">or whatever ...</font></h2>
+				                                           
+			</td>
+		</tr>
+	</table>
+</hgroup>
+ 
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:Waterback.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Camel: Inherit Errorhandling</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-09T00:14:00+01:00" pubdate data-updated="true">Dec 9<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Hello All,</p>
+
+<p>today i want to write sth new from my ongoing understanding of my work with Apache Camel.
+This time it&#8217;s not that of a big story as last time, but quite useful:
+Up to this point (actually a little bit in the past now) i thought when building Routes with
+Apache Camel in a org.apache.camel.RouteBuilder you have to write everything you want to configure
+in that respective configure()-method and that&#8217;s it.</p>
+
+<p>Well that&#8217;s not true&#8230;</p>
+
+<p>You may as well as call any method you like, i.e. from a class your RouteBuilder inherits from
+and Camel interprets everything as a whole configuration.</p>
+
+<p>Before some might ask: and why should that be useful - Well you could for example define some errorHandlers in that super class and make them accessible for every Camel-Route in which the errorhandling should be active, so you have to define only once but could use those errorhandling definitions in more than one RouteBuilder.</p>
+
+<pre><code>public class InboundRouter extends ErrorHandlingRouteBuilder {
+
+    @Override
+    public void configure() throws Exception {
+        super.inheritConfigure();
+
+        from(fromEndpoint)
+              .noAutoStartup()
+              .transacted()
+              .policy(required)
+              .routeId(BasicRouteBuilder.stdfromRouteId(this.componentBaseName))
+              .process(neededHeadersProcessor)
+              .to(nextstepfromRoute);
+    }
+
+}
+</code></pre>
+
+<p>And in ErrorhandlingRouteBuilder:</p>
+
+<pre><code>inheritConfigure() {
+
+    errHdlRoute = "direct:errorfwd." + cpBase;
+
+    errorHandler(deadLetterChannel(getContext().getEndpoint(errHdlRoute))
+                    .maximumRedeliveries(errHandlingParameters.getMaxRedeliver())
+                    .useOriginalMessage()
+                    .logStackTrace(false)
+                    .maximumRedeliveryDelay(errHandlingParameters.getMaxRedeliverDelay())
+                    .redeliveryDelay(errHandlingParameters.getRedeliverDelay())
+                    .backOffMultiplier(errHandlingParameters.getBackoffMultiplier())
+                    .useExponentialBackOff());
+
+    onException(PermanentError.class)
+                    .maximumRedeliveries(0)
+                    .useOriginalMessage()
+                    .handled(true)
+                    .to(errHdlRoute);
+
+    from(errHdlRoute)
+                    .routeId("errorforwarder")
+                    .process(new ErrorhandlingHeadersProcessor())
+                    .process(new ConvertErrorToJPAProcesor())
+                    .to("jpa:com.innoq.errhandling.SaveMessageStore?persistenceUnit);
+
+}
+</code></pre>
+
+<p>Ahem, don&#8217;t read too much into that errorhandling stuff itself, the configurations shown are parts, taken from my most recent project.<br>
+I promise i will come back with another post to explain my solution for errorhandling.
+I only wanted to show that every camel-configuration aspect in the above example is also considered from camel in it&#8217;s configuration process.</p>
+
+<p>As already mentioned you could build a big callstack in inherited classes or in others - it is only important to start your callstack inside the configure()-method of a RouteBuilder that gets loaded with the start of the CamelContext.</p>
+
+<p>Now, if you might say: &#8220;Hello Mr. Obvious&#8221; - sorry that i wasted your precious time.</p>
+
+<p>For me, from reading the available online docs and the Book &#8220;Camel in Action&#8221;
+(which is, by the way, a very good one and a great way to start/work with Apache Camel)
+this wasn&#8217;t so obvious to me.</p>
+
+<p>Cheers&#8230; <br/>
+Martin</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Martin Huber, innoq Deutschland GmbH</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-09T00:14:00+01:00" pubdate data-updated="true">Dec 9<span>th</span>, 2011</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Waterback.github.com/blog/2011/12/09/camel-inherit-errorhandling/" data-via="" data-counturl="http://Waterback.github.com/blog/2011/12/09/camel-inherit-errorhandling/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/12/08/application-monitoring-with-camel/" title="Previous Post: Application-Monitoring with Camel">&laquo; Application-Monitoring with Camel</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2011/12/09/camel-inherit-errorhandling/">Camel: Inherit Errorhandling</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/12/08/application-monitoring-with-camel/">Application-Monitoring with Camel</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/12/07/welcome/">Welcome</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - Martin Huber, innoq Deutschland GmbH -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
