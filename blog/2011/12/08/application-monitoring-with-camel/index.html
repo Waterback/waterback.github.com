@@ -108,10 +108,8 @@ If you have absolutely no idea what i could possibly mean with routes and statis
 <a href="http://camel.apache.org">Camel WebSite</a> and for the jmx part itself: <a href="http://camel.apache.org/camel-jmx.html">Camel JMX</a></p>
 
 <p>Because this example here is build around camel-routes you&#8217;ll see the statistics kept by
-a <code>org.apache.camel.management.mbean.ManagedPerformanceCounter</code><br>
+a &#8216;org.apache.camel.management.mbean.ManagedPerformanceCounter&#8217;<br/>
 I want to persist those stats in a database using JPA. So i need a @Entity for this:</p>
-
-<p><code>&lt;![CDATA[</p>
 
 <pre><code>@Entity(name = "CAMELSTATENTRY")
 @Table(name = "MyStats")
@@ -141,20 +139,14 @@ public class CamelStatEntry {
     ...
 </code></pre>
 
-<p> ]]>
-</code>
-I think it&#8217;s not too complicated to see, what those values in the CamelStatEntry-Entity stand for.
+<p>I think it&#8217;s not too complicated to see, what those values in the CamelStatEntry-Entity stand for.
 This values get collected by Camel while exchanges &#8220;run through&#8221; your routes.
 The trick is now to gather those statistics in a time-interval. The idea behind the time-interval is to be able to see, how your routes &#8220;behave&#8221; over time.
 For this time-interval we&#8217;re going to use another route, a route defined in StatCollectionRouter-RouteBuilder.
 This route is one, that get&#8217;s triggered at defined points in time while using the
  <a href="http://camel.apache.org/quartz.html" >quartz component</a> (in my example every full quarter of an hour).</p>
 
-<br>
-
-
-<p>So there&#8217;s the route:
-<code>&lt;![CDATA[</p>
+<p>So there&#8217;s the route:</p>
 
 <pre><code>public class StatCollectionRouter extends RouteBuilder implements InitializingBean {
 
@@ -177,167 +169,158 @@ This route is one, that get&#8217;s triggered at defined points in time while us
     ...
 </code></pre>
 
-<p>]]>   <br/>
-</code></p>
-
-<p>
-After the route got triggered it calls a bean, that does all the collection-work.
+<p>After the route got triggered it calls a bean, that does all the collection-work.
 This bean returns a list of all CamelStatEntry-Objects. The split() divides the one trigger into so many message-exchanges
 as you have CamelStatEntry-Objects in that List, returned by the collect-method of the statCollBean. Then every CamelStatEntry
-gets stored, when sent to the jpa-component. Of course, the &#8220;statsdb&#8221;-persistenceUnit is defined in a persistence.xml-file.<p>
+gets stored, when sent to the jpa-component. Of course, the &#8220;statsdb&#8221;-persistenceUnit is defined in a persistence.xml-file.</p>
 
-The last thing you need to know how to collect the stats from the Camel-Routes-MBeans.
+<p>The last thing you need to know how to collect the stats from the Camel-Routes-MBeans.</p>
 
-Well the following assumes, that you have a jmx-connector started with your CamelContext and know a little bit about
+<p>Well the following assumes, that you have a jmx-connector started with your CamelContext and know a little bit about
 connecting to them and requesting MBeans. Explaining all that would be to much at this. Look @ the recommended reading above
-to see how this is done.
+to see how this is done.</p>
 
-I cut my example-code a little bit, because there&#8217;s a point in there that&#8217;s rather boring: How to select the Objectnames to check. 
-I need to connect to the MBeanServer of my &#8220;DefaultDomain&#8221;. My Jmx-Agent is configured in the spring-config like this:         <br>
-<code> 
-  <![CDATA[         
-    <camel:camelContext id="myCamelContext" >
-            <camel:jmxAgent id="com.innoq.jmxagent" createConnector="true"  
-            mbeanObjectDomainName="com.innoq" mbeanServerDefaultDomain="WebSphere"
-            xmlns:camel="http://camel.apache.org/schema/spring" connectorPort="39099" 
-            onlyRegisterProcessorWithCustomId="true" />                          
-    </camel:camelContext>                                                                                               
-]]>    
-</code>                                                                                                                             
-The &#8220;DefaultDomain&#8221; mentioned above is &#8220;com.innoq&#8221;.<br>
+<p>I cut my example-code a little bit, because there&#8217;s a point in there that&#8217;s rather boring: How to select the Objectnames to check.
+I need to connect to the MBeanServer of my &#8220;DefaultDomain&#8221;. My Jmx-Agent is configured in the spring-config like this:</p>
+
+<pre><code> &lt;camel:camelContext id="myCamelContext" &gt;
+        &lt;camel:jmxAgent id="com.innoq.jmxagent" createConnector="true"  
+        mbeanObjectDomainName="com.innoq" mbeanServerDefaultDomain="WebSphere"
+        xmlns:camel="http://camel.apache.org/schema/spring" connectorPort="39099" 
+        onlyRegisterProcessorWithCustomId="true" /&gt;                          
+&lt;/camel:camelContext&gt;                                                                                               
+</code></pre>
+
+<p>The &#8220;DefaultDomain&#8221; mentioned above is &#8220;com.innoq&#8221;.<br/>
 You need to know the default-domain, because when you search for your MBeans with the Objectname, you have to set the right Domain.
 The following is a part of the initialization of the StatCollectorBean. I search for Route-Types in my MBeanServer. Note that
 i have an extra-class &#8220;MyJMXHelper&#8221; that finds the right MBeanServer for me, which i left out for space reasons. And also allow me
-to say that this is just an example for creating the list: &#8220;allObjectNames2Check&#8221; - the ObjectNames, for which i want to check my Statistics.  
-Feel free to do this more elegantly.<br>
-The things you need to know gather around the build-up of the searchstring s 
-and that you maybe make a List of all MBeans that should be checked.
-<code>                                                                
-    <![CDATA[  
-    public class StatCollectorBean implements JMXConstants {
+to say that this is just an example for creating the list: &#8220;allObjectNames2Check&#8221; - the ObjectNames, for which i want to check my Statistics.<br/>
+Feel free to do this more elegantly.<br/>
+The things you need to know gather around the build-up of the searchstring s
+and that you maybe make a List of all MBeans that should be checked.</p>
 
-        /**
-        * Result-List of all Objectnames that have to be statistically checked.
-        */
-        private Set<ObjectName> allObjectNames2Check;
+<pre><code>public class StatCollectorBean implements JMXConstants {
 
-    
-     ...
-   
-        @SuppressWarnings("unchecked")
-        private void addRoutes2CheckSet(List<String> searchStringList) {
-            MBeanServer mbs = MyJMXHelper.findDefaultDomainMBS();
-            ObjectName ojnsearch;
-            Set<ObjectName> routembeans = null;
-            Iterator<String> it = searchStringList.iterator();
-            while (it.hasNext()) {
-                String routeIdName = it.next();
-                try {
-                    String s = "com.innoq:type=routes, name=\"" + routeIdName ""\", *";
-                    ojnsearch = new ObjectName(s);
-                    routembeans = mbs.queryNames(ojnsearch, null);
-                    if (routembeans.size() != 0) {
-                        allObjectNames2Check.addAll(routembeans);
-                    }
-
-                }
-                catch (MalformedObjectNameException e) {
-                    e.printStackTrace();
-                }
-                catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-            }
-        } ]]>
-</code>                       
+    /**
+    * Result-List of all Objectnames that have to be statistically checked.
+    */
+    private Set&lt;ObjectName&gt; allObjectNames2Check;
 
 
-The last piece of code i wanna show is the collect() method of the StatCollectorBean. It works with the Set &#8220;allObjectNames2Check&#8221;
-initialized in the addRoutes2CheckSet-method
+ ...
 
-<code>   
-    <![CDATA[   
-    public List<CamelStatEntry> collect() throws RuntimeException {
-        if (!initialized) {
-            synchronized (StatCollectorBean.class) {
-                init();
-            }
-        }
-        VirtualClock clock = new VirtualClock();
-        List<CamelStatEntry> list = new ArrayList<CamelStatEntry>(allOjn2Check.size());
-        try {
-            for (ObjectName ojn : allOjn2Check) {
-                list.add(createCSEfromMBean(ojn, clock.getDate()));
-            }
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return list;
-
-    }
-
-    private CamelStatEntry createCSEfromMBean(ObjectName ojn, Date statisticTimeStamp)
-            throws Exception {            
-
-        final String[] emptySig = new String[] {};
-        final Object[] emptyParms = new Object[] {};
-
-        CamelStatEntry cse = new CamelStatEntry();
+    @SuppressWarnings("unchecked")
+    private void addRoutes2CheckSet(List&lt;String&gt; searchStringList) {
         MBeanServer mbs = MyJMXHelper.findDefaultDomainMBS();
-        String nameId = (String) mbs.invoke(ojn, "getRouteId", emptyParms, emptySig);
-        cse.setNameIdentifier(nameId);
-        cse.setExchangesCompleted((Long) mbs.invoke(ojn,
-                                                    "getExchangesCompleted",
-                                                    emptyParms, emptySig));
-        cse.setExchangesFailed((Long) mbs.invoke(ojn, 
-                                                    "getExchangesFailed", 
-                                                    emptyParms, emptySig));
-        cse.setFirstExchangeCompletedTimestamp((Date) mbs.invoke(ojn, 
-                                                    "getFirstExchangeCompletedTimestamp", 
-                                                    emptyParms, emptySig));
-        cse.setFirstExchangeFailureTimestamp((Date) mbs.invoke(ojn, 
-                                                    "getFirstExchangeFailureTimestamp", 
-                                                    emptyParms, emptySig));
-        cse.setLastExchangeCompletedTimestamp((Date) mbs.invoke(ojn, 
-                                                    "getLastExchangeCompletedTimestamp", 
-                                                    emptyParms, emptySig));
-        cse.setLastExchangeFailureTimestamp((Date) mbs.invoke(ojn,
-                                                    "getLastExchangeFailureTimestamp",
-                                                    emptyParms, emptySig));
-        cse.setLastProcessingTime((Long) mbs.invoke(ojn, 
-                                                    "getLastProcessingTime",
-                                                    emptyParms, emptySig));
-        cse.setMaxProcessingTime((Long) mbs.invoke(ojn,
-                                                   "getMaxProcessingTime",
-                                                   emptyParms, emptySig));
-        cse.setMinProcessingTime((Long) mbs.invoke(ojn,
-                                                   "getMinProcessingTime",
-                                                   emptyParms, emptySig));
-        cse.setMeanProcessingTime((Long) mbs.invoke(ojn,
-                                                    "getMeanProcessingTime",
-                                                    emptyParms, emptySig));
-        cse.setStatisticTimeStamp(statisticTimeStamp);
-        cse.setTotalExchanges((Long) mbs.invoke(ojn, 
-                                                    "getExchangesTotal", 
-                                                    emptyParms, emptySig));
-        cse.setId(statisticTimeStamp.getTime() + nameId.hashCode() + servername.hashCode());
+        ObjectName ojnsearch;
+        Set&lt;ObjectName&gt; routembeans = null;
+        Iterator&lt;String&gt; it = searchStringList.iterator();
+        while (it.hasNext()) {
+            String routeIdName = it.next();
+            try {
+                String s = "com.innoq:type=routes, name=\"" + routeIdName ""\", *";
+                ojnsearch = new ObjectName(s);
+                routembeans = mbs.queryNames(ojnsearch, null);
+                if (routembeans.size() != 0) {
+                    allObjectNames2Check.addAll(routembeans);
+                }
 
-        cse.setTotalProcessingTime((Long) mbs.invoke(ojn,
-                                                     "getTotalProcessingTime",
-                                                     emptyParms, emptySig));
-        mbs.invoke(ojn, "reset", emptyParms, emptySig);
-        return cse;
-    }    
-    ]]>
-</code>
-Note that it is important to reset the statistics, so i have for every time interval a fresh set of the statistics.
-<br>
-So that&#8217;s it.<br>
-Hope you&#8217;ll be able to use some of this.<p>
-Cheers, 
-Martin
+            }
+            catch (MalformedObjectNameException e) {
+                e.printStackTrace();
+            }
+            catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+    } 
+</code></pre>
 
+<p>The last piece of code i wanna show is the collect() method of the StatCollectorBean. It works with the Set &#8220;allObjectNames2Check&#8221;
+initialized in the addRoutes2CheckSet-method</p>
+
+<pre><code>public List&lt;CamelStatEntry&gt; collect() throws RuntimeException {
+    if (!initialized) {
+        synchronized (StatCollectorBean.class) {
+            init();
+        }
+    }
+    VirtualClock clock = new VirtualClock();
+    List&lt;CamelStatEntry&gt; list = new ArrayList&lt;CamelStatEntry&gt;(allOjn2Check.size());
+    try {
+        for (ObjectName ojn : allOjn2Check) {
+            list.add(createCSEfromMBean(ojn, clock.getDate()));
+        }
+    }
+    catch (Exception e) {
+        throw new RuntimeException(e);
+    }
+    return list;
+
+}
+
+private CamelStatEntry createCSEfromMBean(ObjectName ojn, Date statisticTimeStamp)
+        throws Exception {            
+
+    final String[] emptySig = new String[] {};
+    final Object[] emptyParms = new Object[] {};
+
+    CamelStatEntry cse = new CamelStatEntry();
+    MBeanServer mbs = MyJMXHelper.findDefaultDomainMBS();
+    String nameId = (String) mbs.invoke(ojn, "getRouteId", emptyParms, emptySig);
+    cse.setNameIdentifier(nameId);
+    cse.setExchangesCompleted((Long) mbs.invoke(ojn,
+                                                "getExchangesCompleted",
+                                                emptyParms, emptySig));
+    cse.setExchangesFailed((Long) mbs.invoke(ojn, 
+                                                "getExchangesFailed", 
+                                                emptyParms, emptySig));
+    cse.setFirstExchangeCompletedTimestamp((Date) mbs.invoke(ojn, 
+                                                "getFirstExchangeCompletedTimestamp", 
+                                                emptyParms, emptySig));
+    cse.setFirstExchangeFailureTimestamp((Date) mbs.invoke(ojn, 
+                                                "getFirstExchangeFailureTimestamp", 
+                                                emptyParms, emptySig));
+    cse.setLastExchangeCompletedTimestamp((Date) mbs.invoke(ojn, 
+                                                "getLastExchangeCompletedTimestamp", 
+                                                emptyParms, emptySig));
+    cse.setLastExchangeFailureTimestamp((Date) mbs.invoke(ojn,
+                                                "getLastExchangeFailureTimestamp",
+                                                emptyParms, emptySig));
+    cse.setLastProcessingTime((Long) mbs.invoke(ojn, 
+                                                "getLastProcessingTime",
+                                                emptyParms, emptySig));
+    cse.setMaxProcessingTime((Long) mbs.invoke(ojn,
+                                               "getMaxProcessingTime",
+                                               emptyParms, emptySig));
+    cse.setMinProcessingTime((Long) mbs.invoke(ojn,
+                                               "getMinProcessingTime",
+                                               emptyParms, emptySig));
+    cse.setMeanProcessingTime((Long) mbs.invoke(ojn,
+                                                "getMeanProcessingTime",
+                                                emptyParms, emptySig));
+    cse.setStatisticTimeStamp(statisticTimeStamp);
+    cse.setTotalExchanges((Long) mbs.invoke(ojn, 
+                                                "getExchangesTotal", 
+                                                emptyParms, emptySig));
+    cse.setId(statisticTimeStamp.getTime() + nameId.hashCode() + servername.hashCode());
+
+    cse.setTotalProcessingTime((Long) mbs.invoke(ojn,
+                                                 "getTotalProcessingTime",
+                                                 emptyParms, emptySig));
+    mbs.invoke(ojn, "reset", emptyParms, emptySig);
+    return cse;
+}    
+</code></pre>
+
+<p>Note that it is important to reset the statistics, so i have for every time interval a fresh set of the statistics.</p>
+
+<p>So that&#8217;s it.<br/>
+Hope you&#8217;ll be able to use some of this.</p>
+
+<p>Cheers,
+Martin</p>
 </div>
 
 
