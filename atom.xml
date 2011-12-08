@@ -4,7 +4,7 @@
   <title><![CDATA[Ride the Camel!]]></title>
   <link href="http://Waterback.github.com/atom.xml" rel="self"/>
   <link href="http://Waterback.github.com/"/>
-  <updated>2011-12-09T00:19:05+01:00</updated>
+  <updated>2011-12-09T00:20:20+01:00</updated>
   <id>http://Waterback.github.com/</id>
   <author>
     <name><![CDATA[Martin Huber, innoq Deutschland GmbH]]></name>
@@ -99,7 +99,7 @@ Martin</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Application-Monitoring with Camel]]></title>
+    <title type="html"><![CDATA[Camel: Application-Monitoring]]></title>
     <link href="http://Waterback.github.com/blog/2011/12/08/application-monitoring-with-camel/"/>
     <updated>2011-12-08T10:05:00+01:00</updated>
     <id>http://Waterback.github.com/blog/2011/12/08/application-monitoring-with-camel</id>
