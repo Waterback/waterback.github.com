@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Application-Monitoring with Camel - Ride the Camel</title>
+  <title>Application-Monitoring with Camel - Ride the Camel!</title>
   <meta name="author" content="Martin Huber, innoq Deutschland GmbH">
 
   
@@ -25,7 +25,7 @@ the possibilities you have with Camel. In this &hellip;">
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <link href="/atom.xml" rel="alternate" title="Ride the Camel" type="application/atom+xml">
+  <link href="/atom.xml" rel="alternate" title="Ride the Camel!" type="application/atom+xml">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -39,7 +39,7 @@ the possibilities you have with Camel. In this &hellip;">
   <table>
   <tr>
 	<td width="30%">
-	  <h1><a href="/">Ride the Camel</a></h1>
+	  <h1><a href="/">Ride the Camel!</a></h1>
 	  
 	    <p halign="center"><h2>or whatever</h2></p>
 	  
@@ -138,7 +138,6 @@ public class CamelStatEntry {
     public Long getId() {
         return id;
     }
-
     ...
 </code></pre>
 
@@ -154,30 +153,31 @@ This route is one, that get&#8217;s triggered at defined points in time while us
 
 
 <p>So there&#8217;s the route:
-<code>
-public class StatCollectionRouter extends RouteBuilder implements InitializingBean {</p>
+<code></p>
 
-<pre><code>/**
- * Spring injected bean, that does all the collection work, and keeps the
- * information which routes have to be checked.
- */
-private StatCollectorBean statCollBean;
-private String targetEndpoint = "jpa:?persistenceUnit=zifsdb&amp;consumeDelete=false";
+<pre><code>public class StatCollectionRouter extends RouteBuilder implements InitializingBean {
 
-@Override
-public void configure() throws Exception {
-    from(quartz://zs3vsl/statctr?cron=0+15+*+*+*+?+*)
-        .routeId("StatisticalRoute")
-        .bean(statCollBean, "collect")
-        .split(body())
-        .to("jpa:?persistenceUnit=statsdb")
-        .threads(1);
+    /**
+     * Spring injected bean, that does all the collection work, and keeps the
+     * information which routes have to be checked.
+     */
+    private StatCollectorBean statCollBean;
+    private String targetEndpoint = "jpa:?persistenceUnit=zifsdb&amp;consumeDelete=false";
+
+    @Override
+    public void configure() throws Exception {
+        from(quartz://zs3vsl/statctr?cron=0+15+*+*+*+?+*)
+            .routeId("StatisticalRoute")
+            .bean(statCollBean, "collect")
+            .split(body())
+            .to("jpa:?persistenceUnit=statsdb")
+            .threads(1);
+    }
+...
 }
 </code></pre>
 
-<p>&#8230;
-}
-</code></p>
+<p></code></p>
 
 <p>
 After the route got triggered it calls a bean, that does all the collection-work.
@@ -214,41 +214,41 @@ Feel free to do this more elegantly.<br>
 The things you need to know gather around the build-up of the searchstring s 
 and that you maybe make a List of all MBeans that should be checked.
 <code>              
-public class StatCollectorBean implements JMXConstants {
+    public class StatCollectorBean implements JMXConstants {
 
-    /**
-    * Result-List of all Objectnames that have to be statistically checked.
-    */
-    private Set<ObjectName> allObjectNames2Check;
+        /**
+        * Result-List of all Objectnames that have to be statistically checked.
+        */
+        private Set<ObjectName> allObjectNames2Check;
 
     
- ...
+     ...
    
-    @SuppressWarnings("unchecked")
-    private void addRoutes2CheckSet(List<String> searchStringList) {
-        MBeanServer mbs = MyJMXHelper.findDefaultDomainMBS();
-        ObjectName ojnsearch;
-        Set<ObjectName> routembeans = null;
-        Iterator<String> it = searchStringList.iterator();
-        while (it.hasNext()) {
-            String routeIdName = it.next();
-            try {
-                String s = "com.innoq:type=routes, name=\"" + routeIdName ""\", *";
-                ojnsearch = new ObjectName(s);
-                routembeans = mbs.queryNames(ojnsearch, null);
-                if (routembeans.size() != 0) {
-                    allObjectNames2Check.addAll(routembeans);
-                }
+        @SuppressWarnings("unchecked")
+        private void addRoutes2CheckSet(List<String> searchStringList) {
+            MBeanServer mbs = MyJMXHelper.findDefaultDomainMBS();
+            ObjectName ojnsearch;
+            Set<ObjectName> routembeans = null;
+            Iterator<String> it = searchStringList.iterator();
+            while (it.hasNext()) {
+                String routeIdName = it.next();
+                try {
+                    String s = "com.innoq:type=routes, name=\"" + routeIdName ""\", *";
+                    ojnsearch = new ObjectName(s);
+                    routembeans = mbs.queryNames(ojnsearch, null);
+                    if (routembeans.size() != 0) {
+                        allObjectNames2Check.addAll(routembeans);
+                    }
 
-            }
-            catch (MalformedObjectNameException e) {
-                e.printStackTrace();
-            }
-            catch (NullPointerException e) {
-                e.printStackTrace();
+                }
+                catch (MalformedObjectNameException e) {
+                    e.printStackTrace();
+                }
+                catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
             }
         }
-    }
 </code>                       
    <p>
 The last piece of code i wanna show is the collect() method of the StatCollectorBean. It works with the Set &#8220;allObjectNames2Check&#8221;
