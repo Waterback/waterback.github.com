@@ -4,7 +4,7 @@
   <title><![CDATA[Ride the Camel!]]></title>
   <link href="http://Waterback.github.com/atom.xml" rel="self"/>
   <link href="http://Waterback.github.com/"/>
-  <updated>2011-12-08T10:33:21+01:00</updated>
+  <updated>2011-12-08T10:35:17+01:00</updated>
   <id>http://Waterback.github.com/</id>
   <author>
     <name><![CDATA[Martin Huber, innoq Deutschland GmbH]]></name>
@@ -133,7 +133,7 @@ Feel free to do this more elegantly.<br>
 The things you need to know gather around the build-up of the searchstring s 
 and that you maybe make a List of all MBeans that should be checked.
 <code>                                                                
-&lt;![CDATA[  
+    &lt;![CDATA[  
     public class StatCollectorBean implements JMXConstants {
 
         /**
@@ -168,8 +168,7 @@ and that you maybe make a List of all MBeans that should be checked.
                     e.printStackTrace();
                 }
             }
-        }          
-]]&gt;
+        } ]]&gt;
 </code>                       
 
 
@@ -177,7 +176,7 @@ The last piece of code i wanna show is the collect() method of the StatCollector
 initialized in the addRoutes2CheckSet-method
 
 <code>   
-&lt;![CDATA[   
+    &lt;![CDATA[   
     public List<CamelStatEntry> collect() throws RuntimeException {
         if (!initialized) {
             synchronized (StatCollectorBean.class) {
@@ -250,7 +249,7 @@ initialized in the addRoutes2CheckSet-method
         mbs.invoke(ojn, "reset", emptyParms, emptySig);
         return cse;
     }    
-]]&gt;
+    ]]&gt;
 </code>
 Note that it is important to reset the statistics, so i have for every time interval a fresh set of the statistics.
 <br>
