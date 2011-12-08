@@ -111,41 +111,41 @@ If you have absolutely no idea what i could possibly mean with routes and statis
 <a href="http://camel.apache.org">Camel WebSite</a> and for the jmx part itself: <a href="http://camel.apache.org/camel-jmx.html">Camel JMX</a></p>
 
 <p>Because this example here is build around camel-routes you&#8217;ll see the statistics kept by
-a <code>org.apache.camel.management.mbean.ManagedPerformanceCounter</code>
+a <code>org.apache.camel.management.mbean.ManagedPerformanceCounter</code><br>
 I want to persist those stats in a database using JPA. So i need a @Entity for this:</p>
 
-<p><code>
-@Entity(name = "CAMELSTATENTRY")
+<p><code></p>
+
+<pre><code>@Entity(name = "CAMELSTATENTRY")
 @Table(name = "MyStats")
-public class CamelStatEntry {</p>
+public class CamelStatEntry {
 
-<pre><code>private Long id;
-private String nameIdentifier;
-private Date statisticTimeStamp;
-private Long totalExchanges;
-private Long exchangesCompleted;
-private Long exchangesFailed;
-private Long minProcessingTime;
-private Long maxProcessingTime;
-private Long totalProcessingTime;
-private Long lastProcessingTime;
-private Long meanProcessingTime;
-private Date firstExchangeCompletedTimestamp;
-private Date firstExchangeFailureTimestamp;
-private Date lastExchangeCompletedTimestamp;
-private Date lastExchangeFailureTimestamp;
+    private Long id;
+    private String nameIdentifier;
+    private Date statisticTimeStamp;
+    private Long totalExchanges;
+    private Long exchangesCompleted;
+    private Long exchangesFailed;
+    private Long minProcessingTime;
+    private Long maxProcessingTime;
+    private Long totalProcessingTime;
+    private Long lastProcessingTime;
+    private Long meanProcessingTime;
+    private Date firstExchangeCompletedTimestamp;
+    private Date firstExchangeFailureTimestamp;
+    private Date lastExchangeCompletedTimestamp;
+    private Date lastExchangeFailureTimestamp;
 
-@Id
-@Column(name = "ID")
-public Long getId() {
-    return id;
-}
+    @Id
+    @Column(name = "ID")
+    public Long getId() {
+        return id;
+    }
 
-...
+    ...
 </code></pre>
 
-<p>}
-</code>
+<p></code>
 I think it&#8217;s not too complicated to see, what those values in the CamelStatEntry-Entity stand for.
 This values get collected by Camel while exchanges &#8220;run through&#8221; your routes.
 The trick is now to gather those statistics in a time-interval. The idea behind the time-interval is to be able to see, how your routes &#8220;behave&#8221; over time.
