@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Ride the Camel, or whatever]]></title>
+  <title><![CDATA[Ride the Camel]]></title>
   <link href="http://Waterback.github.com/atom.xml" rel="self"/>
   <link href="http://Waterback.github.com/"/>
-  <updated>2011-12-08T09:23:48+01:00</updated>
+  <updated>2011-12-08T09:25:36+01:00</updated>
   <id>http://Waterback.github.com/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Martin Huber, innoq Deutschland GmbH]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
