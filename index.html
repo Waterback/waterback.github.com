@@ -114,7 +114,7 @@ If you have absolutely no idea what i could possibly mean with routes and statis
 a <code>org.apache.camel.management.mbean.ManagedPerformanceCounter</code><br>
 I want to persist those stats in a database using JPA. So i need a @Entity for this:</p>
 
-<p><code></p>
+<p><code>&lt;![CDATA[</p>
 
 <pre><code>@Entity(name = "CAMELSTATENTRY")
 @Table(name = "MyStats")
@@ -144,7 +144,8 @@ public class CamelStatEntry {
     ...
 </code></pre>
 
-<p></code>
+<p> ]]>
+</code>
 I think it&#8217;s not too complicated to see, what those values in the CamelStatEntry-Entity stand for.
 This values get collected by Camel while exchanges &#8220;run through&#8221; your routes.
 The trick is now to gather those statistics in a time-interval. The idea behind the time-interval is to be able to see, how your routes &#8220;behave&#8221; over time.
@@ -156,7 +157,7 @@ This route is one, that get&#8217;s triggered at defined points in time while us
 
 
 <p>So there&#8217;s the route:
-<code></p>
+<code>&lt;![CDATA[</p>
 
 <pre><code>public class StatCollectionRouter extends RouteBuilder implements InitializingBean {
 
@@ -176,11 +177,11 @@ This route is one, that get&#8217;s triggered at defined points in time while us
             .to("jpa:?persistenceUnit=statsdb")
             .threads(1);
     }
-...
-}
+    ...
 </code></pre>
 
-<p></code></p>
+<p>]]>   <br/>
+</code></p>
 
 <p>
 After the route got triggered it calls a bean, that does all the collection-work.
@@ -197,14 +198,14 @@ to see how this is done.
 I cut my example-code a little bit, because there&#8217;s a point in there that&#8217;s rather boring: How to select the Objectnames to check. 
 I need to connect to the MBeanServer of my &#8220;DefaultDomain&#8221;. My Jmx-Agent is configured in the spring-config like this:         <br>
 <code> 
-            
+  <![CDATA[         
     <camel:camelContext id="myCamelContext" >
             <camel:jmxAgent id="com.innoq.jmxagent" createConnector="true"  
             mbeanObjectDomainName="com.innoq" mbeanServerDefaultDomain="WebSphere"
             xmlns:camel="http://camel.apache.org/schema/spring" connectorPort="39099" 
             onlyRegisterProcessorWithCustomId="true" />                          
     </camel:camelContext>                                                                                               
-    
+]]>    
 </code>                                                                                                                             
 The &#8220;DefaultDomain&#8221; mentioned above is &#8220;com.innoq&#8221;.<br>
 You need to know the default-domain, because when you search for your MBeans with the Objectname, you have to set the right Domain.
@@ -215,7 +216,7 @@ Feel free to do this more elegantly.<br>
 The things you need to know gather around the build-up of the searchstring s 
 and that you maybe make a List of all MBeans that should be checked.
 <code>                                                                
-    
+<![CDATA[  
     public class StatCollectorBean implements JMXConstants {
 
         /**
@@ -251,7 +252,7 @@ and that you maybe make a List of all MBeans that should be checked.
                 }
             }
         }          
-
+]]>
 </code>                       
 
 
@@ -259,7 +260,7 @@ The last piece of code i wanna show is the collect() method of the StatCollector
 initialized in the addRoutes2CheckSet-method
 
 <code>   
-    
+<![CDATA[   
     public List<CamelStatEntry> collect() throws RuntimeException {
         if (!initialized) {
             synchronized (StatCollectorBean.class) {
@@ -332,7 +333,7 @@ initialized in the addRoutes2CheckSet-method
         mbs.invoke(ojn, "reset", emptyParms, emptySig);
         return cse;
     }    
-
+]]>
 </code>
 Note that it is important to reset the statistics, so i have for every time interval a fresh set of the statistics.
 <br>
