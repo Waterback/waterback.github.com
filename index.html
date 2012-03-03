@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head >
   <meta charset="utf-8">
-  <title>Ride the Camel!</title>
+  <title>index - Ride the Camel!</title>
   <meta name="author" content="Martin Huber, innoq Deutschland GmbH">
 
   
-  <meta name="description" content="Introduction Have you ever wondered, how to create a lightweight versioning of your SOAP-Webservices?
-Or a simple way to create a middle-tier for &hellip;">
+  <meta name="description" content="Index Mar 3rd, 2012 Recent Posts Easy handmade SOAP-Webservice-Versioning with Apache Camel Camel: Inherit Errorhandling Camel: Application- &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -36,7 +35,7 @@ Or a simple way to create a middle-tier for &hellip;">
 
 <body    link="black" vlink="black" alink="black">
   <header role="banner"><hgroup>
-	<table width="100%" height="275" style="background-image: url(images/iStock_000015922631XSmall_xl.jpg)" >
+	<table width="100%" height="275" style="background-image: url(/images/iStock_000015922631XSmall_xl.jpg)" >
 		<tr>          
 			<td width="33%"></td>
 			<td align="center">
@@ -55,8 +54,6 @@ Or a simple way to create a middle-tier for &hellip;">
 		</tr>
 	</table>
 </hgroup>
- 
-
 </header>
   <nav role="navigation"><ul class="subscription" data-subscription="rss">
   <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
@@ -68,27 +65,21 @@ Or a simple way to create a middle-tier for &hellip;">
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
+<ul class="main-navigation">                      
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
 </ul>
 
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article role="article">
   
-  
-  
-    <article>
-      
   <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/03/02/easy-handmade-ws-addresssing-with-apache-camel/">Easy Handmade SOAP-Webservice-Versioning With Apache Camel</a></h1>
-    
-    
-      <p class="meta">
-        
+    <h1 class="entry-title">Index</h1>
+    <p class="meta">
 
 
 
@@ -100,380 +91,10 @@ Or a simple way to create a middle-tier for &hellip;">
   
 
 
-<time datetime="2012-03-02T22:38:00+01:00" pubdate data-updated="true">Mar 2<span>nd</span>, 2012</time>
-        
-      </p>
-    
+<time datetime="2012-03-03T14:31:00+01:00" pubdate data-updated="true">Mar 3<span>rd</span>, 2012</time></p>
   </header>
-
-
-  <div class="entry-content"><h2>Introduction</h2>
-
-<p>Have you ever wondered, how to create a lightweight versioning of your SOAP-Webservices?
-Or a simple way to create a middle-tier for scheme-conversions
-between a Webservice-Client and a Webservice-Server using different Schemes?</p>
-
-<p>Then this post may be interesting to you.</p>
-
-<p>A short while ago I was confronted with the exact problem I described as an Introduction. It was to create an integration help for a Business Process Management System.
-I mulled over that problem somewhat and came up with an example, how you could do this very easily (as i find) with my favorite Integration Framework.</p>
-
-<p>As you may have noticed I am talking about Apache Camel. In this Post I&#8217;d like to explain the solution i have found.</p>
-
-<p>Before i get into the details, you could check and try (see readme)
-that example for yourself: It&#8217;s located at github:</p>
-
-<p><a href="https://github.com/Waterback/BPELCam">BPEL-Camel Example</a></p>
-
-<p>Here in this post i will only repeat the interesting parts of it.</p>
-
-<p>&#8230; Now let&#8217;s begin &#8230;</p>
-
-<h2>Business Case</h2>
-
-<p>Lets suppose, we have a Webservice for an specific business-purpose.
-The business case is invented, so please don&#8217;t give too much on the details of it.</p>
-
-<p>I had to find a way to service webservice-clients that for example, know a Version 1-Schema of our Webservice, but need to be
-serviced by the Version 2-Webservice.</p>
-
-<p>And vice-versa, meaning a V2-Scheme-Call should be able to be serviced by the V1-Webservice.</p>
-
-<h2>Configuration</h2>
-
-<p>I have two WSDLs in this example that differ only by the imported Xsd-Documents for V1 and V2 Schemas.</p>
-
-<p>As Camel is well integrated with the CXF-Framework to provide Webservices, you only have to create some configuration. In my example
-i use Spring for my configuration purposes.
-Here&#8217;s a part of the <em>camel-context.xml</em> -Spring config:</p>
-
-<p>For this simple example i use the the Jetty-Component to create a Http-Endpoint as a servlet for both webservices:</p>
-
-<pre><code>&lt;bean id="jetty" class="org.apache.camel.component.jetty.JettyHttpComponent" /&gt; 
-
-&lt;cxf:cxfEndpoint id="insuranceEndpoint-v1"
-    address="http://localhost:9000/process1"
-    wsdlURL="/wsdl/insuranceV1.wsdl"&gt;
-    &lt;cxf:properties&gt;
-        &lt;entry key="dataFormat" value="MESSAGE" /&gt;
-        &lt;entry key="publishedEndpointUrl" value="http://localhost:9080/insuranceservice" /&gt;
-    &lt;/cxf:properties&gt;
-&lt;/cxf:cxfEndpoint&gt;
-&lt;cxf:cxfEndpoint id="insuranceEndpoint-v2"
-     address="http://localhost:9000/process2"
-    wsdlURL="/wsdl/insuranceV2.wsdl"&gt;
-    &lt;cxf:properties&gt;
-        &lt;entry key="dataFormat" value="MESSAGE" /&gt;
-        &lt;entry key="publishedEndpointUrl" value="http://localhost:9080/insuranceservice" /&gt;
-    &lt;/cxf:properties&gt;
-&lt;/cxf:cxfEndpoint&gt;
-</code></pre>
-
-<p>The Endpoint-Address defined in the WSDL is overwritten with a configuration property: <em>publishedEndpointUrl</em> that points to that servlet i wanna use as a entrance to my camel-routes.
-This configuration takes care
-for the Endpoint that is printed into the wsdl when you call: <em>http://localhost:9000/process1?wsdl</em></p>
-
-<p>With this i can create a unified entrance to both webservices.</p>
-
-<h2>Camel-Routes: unified entrance for the webservices</h2>
-
-<p>But how is this handled in the camel-routes? See yourself:</p>
-
-<pre><code>package com.innoq.bpelcam;
-
-public class SchemaEvalutionRouter extends RouteBuilder {
-
-    @Override
-    public void configure() throws Exception {
-
-        Namespaces ns_v1 = new Namespaces("c1", "http://bpel.innoq.com/insurance/v1/types");
-        Namespaces ns_v2 = new Namespaces("c2", "http://bpel.innoq.com/insurance/v2/types");
-
-        from("jetty:http://localhost:9080/insuranceservice?minThreads=5")
-            .choice()
-            .when().xpath("//c1:CarInsuranceFindProcess", ns_v1)
-                .setHeader("schemaVersion", constant("1"))
-                .setHeader("targetVersion").xpath("//c1:targetVersion", String.class, ns_v1)    
-                .to("seda:evaluateV1Scheme")
-            .when().xpath("//c2:CarInsuranceFindProcess", ns_v2)
-                .setHeader("schemaVersion", constant("2"))
-                .setHeader("targetVersion").xpath("//c2:targetVersion", String.class, ns_v2)
-                .to("seda:evaluateV2Scheme")
-            .otherwise()
-                .to("seda:fault");
-
-        ...
-</code></pre>
-
-<p>So there&#8217;s a Jetty-Endpoint which starts the jetty-container implicitly.</p>
-
-<p>If you&#8217;d like to use your average WebSphere-Web Container ;-) or a Tomcat you have to configure
-it a little bit different in the Spring-config, but this should be the topic for another post (or the Camel-documentation).</p>
-
-<p>We have here a WS-Addressing-like (correct me, when i&#8217;m wrong) determination which Schema the Webservice-Caller uses with
-a simple XPath-Expression. The corresponding namespaces have to be defined at the beginning of the configure method.</p>
-
-<p>For later evaluation this information is stored in the Camel-Exchange as Meta-Information (Header).
-Also the <strong>targetedVersion</strong> is recognized and stored for later evalutaion as a Header.
-Depending on the recognized Schema as V1 or V2, we incorporate a evaluation-route, which is build for each Webservice-Schema-Version:</p>
-
-<pre><code>    from("seda:evaluateV1Scheme")
-        .choice()
-            .when(header("targetVersion").isEqualTo("2"))
-                .pipeline("direct:transformV1V2")
-                .to("cxf:bean:orderEndpoint-v2")
-            .otherwise()
-                .to("cxf:bean:orderEndpoint-v1");           
-
-    from("seda:evaluateV2Scheme")
-        .choice()
-        ...
-
-    from("direct:transformV1V2")
-        .bean(new V1TransformerBean(), "transformV1toV2");  
-</code></pre>
-
-<p>There the targetVersion comes in handy. So you don&#8217;t need no more XPath-evaluations to know where to go.
-So in that matter, for each non-original schema-version (V2,V3 and so on), you need to expand this route
-with another when()-Block.</p>
-
-<p>The <strong>pipeline(&#8220;direct:transformV1V2&#8221;)</strong>-pattern, which enables to incorporate camel-routes (here: <em>&#8220;direct:transformV1V2&#8221;</em>)
-for definition is used in this example to show,
-that you can distribute your schema-conversion on different beans or/and routes as you wish.   <br/>
-The V1TransformerBean takes care in my case for the whole V1 to V2-conversion of the sent document.
-This bean has grown in a not so easy component, so i&#8217;m gonna explain in one of my next posts.</p>
-
-<p><strong>Last trick&#8230;</strong></p>
-
-<p>The last trick is that the whole exchange is sent in the end to <strong>.to(&#8220;cxf:bean:insuranceEndpoint-v2&#8221;) </strong>.
-This is a cxf-endpoint.
-This could be your actual implementation of the versioned Webservice:</p>
-
-<pre><code> package com.innoq.bpelcam;
-
- public class WebservicesRouter extends RouteBuilder { 
-    @Override
-    public void configure() throws Exception {
-        DataFormat jaxb10 = new JaxbDataFormat("com.innoq.bpel.insurance.v1.types");
-        DataFormat jaxb11 = new JaxbDataFormat("com.innoq.bpel.insurance.v2.types");
-
-        Namespaces ns_v1 = new Namespaces("c1", "http://bpel.innoq.com/insurance/v1/types");
-        Namespaces ns_v2 = new Namespaces("c2", "http://bpel.innoq.com/insurance/v2/types");
-
-        from("cxf:bean:insuranceEndpoint-v1")
-            .id("handleProcess_v1")
-            .transform().xpath("//c1:CarInsuranceFindProcess", ns_v1)
-            .unmarshal(jaxb10)
-            .process(new OrderContentsProcessor())
-            .marshal(jaxb10)
-            .to("seda:save")
-            .process(new ResponseBuilderProcessor(10));
-</code></pre>
-
-<p>But you could also easily redirect the whole soap-document to another system (i.e. BPEL).
-Therefore it only needs to be configured in your camel-spring-configuration as Endpoint pointing to another system.</p>
-
-<p>A side note here is: I always use the Java-Fluent-API, because with a little discipline in formatting, you could have your routes
-configured in a very transparent and clear matter. I&#8217;d prefer that over xml- or even graphical-configuration every time.</p>
-
-<h2>That&#8217;s it</h2>
-
-<p>So that&#8217;s it folks.
-If something is not clear to you, i am happy for feedback/questions ;-)</p>
-
-<p>Cheers,
-Martin</p>
-</div>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/12/09/camel-inherit-errorhandling/">Camel: Inherit Errorhandling</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-12-09T00:14:00+01:00" pubdate data-updated="true">Dec 9<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Hello All,</p>
-
-<p>today i want to write sth new from my ongoing understanding of my work with Apache Camel.
-This time it&#8217;s not that of a big story as last time, but quite useful:
-Up to this point (actually a little bit in the past now) i thought when building Routes with
-Apache Camel in a org.apache.camel.RouteBuilder you have to write everything you want to configure
-in that respective configure()-method and that&#8217;s it.</p>
-
-<p>Well that&#8217;s not true&#8230;</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2011/12/09/camel-inherit-errorhandling/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/12/08/application-monitoring-with-camel/">Camel: Application-Monitoring</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-12-08T10:05:00+01:00" pubdate data-updated="true">Dec 8<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I&#8217;ve been working with Apache Camel for a year now and i am still scraping at the top of all
-the possibilities you have with Camel.</p>
-
-<p>In this blog i wanna show something, that might be helpful when Camel is already used and someone want to keep
-the statistics that your routes generate in a database for some sort of long time evaluations.
-I think it&#8217;s quite easy to do so and definitely not limited to handling statistics of camel-routes.
-If you have absolutely no idea what i could possibly mean with routes and statistics, i recommend some reading:
-<a href="http://camel.apache.org">Camel WebSite</a> and for the jmx part itself: <a href="http://camel.apache.org/camel-jmx.html">Camel JMX</a></p>
-
-<p>Because this example here is build around camel-routes you&#8217;ll see the statistics kept by
-a &#8216;org.apache.camel.management.mbean.ManagedPerformanceCounter&#8217;<br/>
-I want to persist those stats in a database using JPA. So i need a @Entity for this:</p>
-
-<pre><code>@Entity(name = "CAMELSTATENTRY")
-@Table(name = "MyStats")
-public class CamelStatEntry {
-
-    private Long id;
-    private String nameIdentifier;
-    private Date statisticTimeStamp;
-    private Long totalExchanges;
-    private Long exchangesCompleted;
-    private Long exchangesFailed;
-    private Long minProcessingTime;
-    private Long maxProcessingTime;
-    private Long totalProcessingTime;
-    private Long lastProcessingTime;
-    private Long meanProcessingTime;
-    private Date firstExchangeCompletedTimestamp;
-    private Date firstExchangeFailureTimestamp;
-    private Date lastExchangeCompletedTimestamp;
-    private Date lastExchangeFailureTimestamp;
-
-    @Id
-    @Column(name = "ID")
-    public Long getId() {
-        return id;
-    }
-    ...
-</code></pre>
-
-<p>I think it&#8217;s not too complicated to see, what those values in the CamelStatEntry-Entity stand for.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2011/12/08/application-monitoring-with-camel/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/12/07/welcome/">Welcome</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-12-07T23:14:00+01:00" pubdate data-updated="true">Dec 7<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Welcome to my random thoughts i find worthy of a writedown.
-As i am about to start this here, blogs actually twittered out of any fashion, but i like them.
-You can learn a lot by reading the blogs of others. I won&#8217;t presume you could necessarily do the same while reading my blog, but i&#8217;ll give it my best shot.</p>
-
-<p>Mostly i am into riding the Apache Camel. Up to now i rode mostly the WebSphere Application Server in my professional Java-Life. In order to keep up a steady progress ;-), i am trying to combine both in my most recent project i am glad to be part of.</p>
-
-<p>Next up: Learning some new language. I am targeting the likes of Erlang, Scala or Ruby</p>
-
-<p>Hopefully you&#8217;ll enjoy some of my posts</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
-<aside class="sidebar"> 
-  
-    <section>
+  <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
     
@@ -497,12 +118,112 @@ You can learn a lot by reading the blogs of others. I won&#8217;t presume you co
 </section>
 
 
+  
+    <footer>
+      <p class="meta">
+        
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-03T14:31:00+01:00" pubdate data-updated="true">Mar 3<span>rd</span>, 2012</time>
+        
+      </p>
+      
+        <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Waterback.github.com/index.html" data-via="Waterback" data-counturl="http://Waterback.github.com/index.html" >Tweet</a>
+  
+  
+  
+</div>
+
+      
+    </footer>
+  
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Martin Huber</h1>
+  <p>I am a Senior Consultant working @ innoQ Deutschland GmbH</p>
+<p> More than a decade of my professional life was 
+filled with the design and creation of Integration-Applications in Java. My main focus is on Java EE and 
+Web-Technologies for complex integration-challenges. </p>
+<p>Integration went from a "hobby" to a profession. So i can say that i'm living a dream (at least one ;-)) in solving integration challenges
+                                                                                                                                             
+<p>I am focused specially on Apache Camel. I like it for it's ease of use and for the Java-Fluent API.
+	XML is everywhere, but the Java-Fluent API you get only while riding the Camel..   
+</p>
+</section>
+<section>
+	<table cellspacing="1" cellpadding="1">
+		 <tr><td>Email:&nbsp;</td><td><a href="mailto:martin.huber@innoq.com">martin.huber@innoq.com</a></td>       </tr>
+		 <tr><td height="1px"></td></tr>
+		 <tr><td>Twitter:&nbsp;</td><td><a href="https://twitter.com/#!/Waterback">@Waterback</a></td>         </tr>
+		  <tr><td height="1px"></td></tr>     
+		 <tr><td>XING:&nbsp;</td><td><a href="http://www.xing.com/profile/Martin_Huber14">Martin Huber - XING</a></td></tr>
+		<tr><td height="1px"></td></tr>     
+		<tr><td>LinkedIn:&nbsp;</td><td><a href="http://www.linkedin.com/profile/view?id=123530434&trk=tab_pro"/>Martin Huber - LinkedIn</td>
+	 </table>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/03/02/easy-handmade-ws-addresssing-with-apache-camel/">Easy handmade SOAP-Webservice-Versioning with Apache Camel</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/12/09/camel-inherit-errorhandling/">Camel: Inherit Errorhandling</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/12/08/application-monitoring-with-camel/">Camel: Application-Monitoring</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/12/07/welcome/">Welcome</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("Waterback", 4, true);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/Waterback" class="twitter-follow-button" data-width="208px" data-show-count="false">Follow @Waterback</a>
+  
+</section>
+
+
 
 
 
 
   
 </aside>
+
 
     </div>
   </div>
