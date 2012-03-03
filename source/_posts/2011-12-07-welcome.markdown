@@ -1,0 +1,16 @@
+---
+layout: post
+title: "Welcome"
+date: 2011-12-07 23:14
+comments: false
+categories: 
+---              
+Welcome to my random thoughts i find worthy of a writedown.
+As i am about to start this here, blogs actually twittered out of any fashion, but i like them.
+You can learn a lot by reading the blogs of others. I won't presume you could necessarily do the same while reading my blog, but i'll give it my best shot.
+
+Mostly i am into riding the Apache Camel. Up to now i rode mostly the WebSphere Application Server in my professional Java-Life. In order to keep up a steady progress ;-), i am trying to combine both in my most recent project i am glad to be part of.  
+
+Next up: Learning some new language. I am targeting the likes of Erlang, Scala or Ruby
+
+Hopefully you'll enjoy some of my posts

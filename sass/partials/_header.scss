@@ -14,5 +14,15 @@ body > header {
     font-size: 1em;
     color: $subtitle-color;
     font-weight: normal;
-  }
+  }                 
+  A.xxxx:link {
+	COLOR: black;
+	font-size: 10px;
+	font-family: verdana;
+	}
+  A.xxxx:visited {
+	COLOR: black;
+	font-size: 10px;
+	font-family: verdana;
+	}
 }
