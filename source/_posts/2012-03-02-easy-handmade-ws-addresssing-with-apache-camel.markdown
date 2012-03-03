@@ -1,7 +1,7 @@
 ---
 layout: post    
 author: Martin "Waterback" Huber (innoq Deutschland GmbH) 
-title: "Easy handmade SOAP-Webservice Versioning with Apache Camel"
+title: "Easy handmade SOAP-Webservice-Versioning with Apache Camel"
 date: 2012-03-02 22:38
 comments: true  
 published: true
@@ -12,8 +12,8 @@ categories:
  - SOAP Versioning
 ---               
 ##Introduction
-Have you ever wondered, how you could create a lightweight Versioning of your Webservices?
-Or have you ever needed a simple way to create middle-tier for scheme-conversions
+Have you ever wondered, how to create a lightweight versioning of your SOAP-Webservices?
+Or a simple way to create a middle-tier for scheme-conversions
 between a Webservice-Client and a Webservice-Server using different Schemes?
 
 Then this post may be interesting to you.
