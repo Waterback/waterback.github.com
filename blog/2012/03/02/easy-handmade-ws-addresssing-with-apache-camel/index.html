@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head >
   <meta charset="utf-8">
-  <title>Ride the Camel!</title>
+  <title>Easy handmade SOAP-Webservice Versioning with Apache Camel - Ride the Camel!</title>
   <meta name="author" content="Martin Huber, innoq Deutschland GmbH">
 
   
@@ -19,7 +19,7 @@ Or have you ever needed a simple way to &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://Waterback.github.com">
+  <link rel="canonical" href="http://Waterback.github.com/blog/2012/03/02/easy-handmade-ws-addresssing-with-apache-camel">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -76,15 +76,12 @@ Or have you ever needed a simple way to &hellip;">
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/03/02/easy-handmade-ws-addresssing-with-apache-camel/">Easy Handmade SOAP-Webservice Versioning With Apache Camel</a></h1>
+      <h1 class="entry-title">Easy Handmade SOAP-Webservice Versioning With Apache Camel</h1>
     
     
       <p class="meta">
@@ -107,7 +104,7 @@ Or have you ever needed a simple way to &hellip;">
   </header>
 
 
-  <div class="entry-content"><h2>Introduction</h2>
+<div class="entry-content"><h2>Introduction</h2>
 
 <p>Have you ever wondered, how you could create a lightweight Versioning of your Webservices?
 Or have you ever needed a simple way to create middle-tier for scheme-conversions
@@ -284,71 +281,16 @@ If something is not clear to you, i am happy for feedback/questions ;-)</p>
 <p>Cheers,
 Martin</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/12/09/camel-inherit-errorhandling/">Camel: Inherit Errorhandling</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">Martin "Waterback" Huber (innoq Deutschland GmbH)</span></span>
 
-<time datetime="2011-12-09T00:14:00+01:00" pubdate data-updated="true">Dec 9<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Hello All,</p>
-
-<p>today i want to write sth new from my ongoing understanding of my work with Apache Camel.
-This time it&#8217;s not that of a big story as last time, but quite useful:
-Up to this point (actually a little bit in the past now) i thought when building Routes with
-Apache Camel in a org.apache.camel.RouteBuilder you have to write everything you want to configure
-in that respective configure()-method and that&#8217;s it.</p>
-
-<p>Well that&#8217;s not true&#8230;</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2011/12/09/camel-inherit-errorhandling/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/12/08/application-monitoring-with-camel/">Camel: Application-Monitoring</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -360,118 +302,39 @@ in that respective configure()-method and that&#8217;s it.</p>
   
 
 
-<time datetime="2011-12-08T10:05:00+01:00" pubdate data-updated="true">Dec 8<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I&#8217;ve been working with Apache Camel for a year now and i am still scraping at the top of all
-the possibilities you have with Camel.</p>
-
-<p>In this blog i wanna show something, that might be helpful when Camel is already used and someone want to keep
-the statistics that your routes generate in a database for some sort of long time evaluations.
-I think it&#8217;s quite easy to do so and definitely not limited to handling statistics of camel-routes.
-If you have absolutely no idea what i could possibly mean with routes and statistics, i recommend some reading:
-<a href="http://camel.apache.org">Camel WebSite</a> and for the jmx part itself: <a href="http://camel.apache.org/camel-jmx.html">Camel JMX</a></p>
-
-<p>Because this example here is build around camel-routes you&#8217;ll see the statistics kept by
-a &#8216;org.apache.camel.management.mbean.ManagedPerformanceCounter&#8217;<br/>
-I want to persist those stats in a database using JPA. So i need a @Entity for this:</p>
-
-<pre><code>@Entity(name = "CAMELSTATENTRY")
-@Table(name = "MyStats")
-public class CamelStatEntry {
-
-    private Long id;
-    private String nameIdentifier;
-    private Date statisticTimeStamp;
-    private Long totalExchanges;
-    private Long exchangesCompleted;
-    private Long exchangesFailed;
-    private Long minProcessingTime;
-    private Long maxProcessingTime;
-    private Long totalProcessingTime;
-    private Long lastProcessingTime;
-    private Long meanProcessingTime;
-    private Date firstExchangeCompletedTimestamp;
-    private Date firstExchangeFailureTimestamp;
-    private Date lastExchangeCompletedTimestamp;
-    private Date lastExchangeFailureTimestamp;
-
-    @Id
-    @Column(name = "ID")
-    public Long getId() {
-        return id;
-    }
-    ...
-</code></pre>
-
-<p>I think it&#8217;s not too complicated to see, what those values in the CamelStatEntry-Entity stand for.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2011/12/08/application-monitoring-with-camel/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
+<time datetime="2012-03-02T22:38:00+01:00" pubdate data-updated="true">Mar 2<span>nd</span>, 2012</time>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/12/07/welcome/">Welcome</a></h1>
-    
-    
-      <p class="meta">
-        
 
-
-
-
-
-
-
-
+<span class="categories">
   
+    <a class='category' href='/blog/categories/apache-camel/'>Apache Camel</a>, <a class='category' href='/blog/categories/soap-versioning/'>SOAP Versioning</a>, <a class='category' href='/blog/categories/camel-cxf-component/'>camel-cxf-component</a>, <a class='category' href='/blog/categories/camel-http-component/'>camel-http-component</a>
+  
+</span>
 
 
-<time datetime="2011-12-07T23:14:00+01:00" pubdate data-updated="true">Dec 7<span>th</span>, 2011</time>
-        
-      </p>
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><p>Welcome to my random thoughts i find worthy of a writedown.
-As i am about to start this here, blogs actually twittered out of any fashion, but i like them.
-You can learn a lot by reading the blogs of others. I won&#8217;t presume you could necessarily do the same while reading my blog, but i&#8217;ll give it my best shot.</p>
-
-<p>Mostly i am into riding the Apache Camel. Up to now i rode mostly the WebSphere Application Server in my professional Java-Life. In order to keep up a steady progress ;-), i am trying to combine both in my most recent project i am glad to be part of.</p>
-
-<p>Next up: Learning some new language. I am targeting the likes of Erlang, Scala or Ruby</p>
-
-<p>Hopefully you&#8217;ll enjoy some of my posts</p>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://Waterback.github.com/blog/2012/03/02/easy-handmade-ws-addresssing-with-apache-camel/" data-via="" data-counturl="http://Waterback.github.com/blog/2012/03/02/easy-handmade-ws-addresssing-with-apache-camel/" >Tweet</a>
+  
+  
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/12/09/camel-inherit-errorhandling/" title="Previous Post: Camel: Inherit Errorhandling">&laquo; Camel: Inherit Errorhandling</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
 </div>
-<aside class="sidebar"> 
+
+<aside class="sidebar">
   
     <section>
   <h1>Recent Posts</h1>
@@ -503,6 +366,7 @@ You can learn a lot by reading the blogs of others. I won&#8217;t presume you co
 
   
 </aside>
+
 
     </div>
   </div>
