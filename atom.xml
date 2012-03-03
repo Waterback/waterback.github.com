@@ -4,7 +4,7 @@
   <title><![CDATA[Ride the Camel!]]></title>
   <link href="http://Waterback.github.com/atom.xml" rel="self"/>
   <link href="http://Waterback.github.com/"/>
-  <updated>2012-03-03T01:17:18+01:00</updated>
+  <updated>2012-03-03T12:50:27+01:00</updated>
   <id>http://Waterback.github.com/</id>
   <author>
     <name><![CDATA[Martin Huber, innoq Deutschland GmbH]]></name>
@@ -14,14 +14,14 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Easy handmade SOAP-Webservice Versioning with Apache Camel]]></title>
+    <title type="html"><![CDATA[Easy handmade SOAP-Webservice-Versioning with Apache Camel]]></title>
     <link href="http://Waterback.github.com/blog/2012/03/02/easy-handmade-ws-addresssing-with-apache-camel/"/>
     <updated>2012-03-02T22:38:00+01:00</updated>
     <id>http://Waterback.github.com/blog/2012/03/02/easy-handmade-ws-addresssing-with-apache-camel</id>
     <content type="html"><![CDATA[<h2>Introduction</h2>
 
-<p>Have you ever wondered, how you could create a lightweight Versioning of your Webservices?
-Or have you ever needed a simple way to create middle-tier for scheme-conversions
+<p>Have you ever wondered, how to create a lightweight versioning of your SOAP-Webservices?
+Or a simple way to create a middle-tier for scheme-conversions
 between a Webservice-Client and a Webservice-Server using different Schemes?</p>
 
 <p>Then this post may be interesting to you.</p>
