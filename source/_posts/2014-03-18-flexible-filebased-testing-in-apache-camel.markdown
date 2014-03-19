@@ -5,7 +5,7 @@ date: 2014-03-18 16:56
 comments: true
 categories: 
 ---
-#Flexible Filebased-Testing
+###Introduction
 Well... "long time no see", but finally I get to cameleering through Software.        
 	
 For my Camel-Routes I used a Test-Setup, I came to think, it may be worth sharing.
@@ -19,6 +19,7 @@ In the Test-Setup, the Working-Route sends it's (transformed) Exchanges to a ins
 filling in for the behind SOAP-Service.
 The Response that goes through the initiating "file-reading"-Route wiretaps also to another instance of the Validation-Route testing for the backward-transformed Scheme. 
 
+###File-Route
 The File-Route looks like this: The "identifier" in the following code helps to the identify the Scheme to test for in this instance of the route.
 
 		from("file:" + routeFolder + "?noop=true&readLock=rename&filter=#testfileFilter")    				// (*1)
@@ -54,7 +55,7 @@ a soap-envelope
 Isn't the "simple"-language a cute little thing. See how easy it is to change a file based on an old one.    
 (*9) See *4.s.. Sends the result to the same folder like the original read file.    
     
-    
+###Validation-Route    
 The Validation-Route has two interesting aspect - the Route that validates against a Scheme. And the errorhandling
 for validation-failures. Validation failures get send to the "mock:failure" endpoint. From this MockEndpoint the
 Unittest is able to evaluate the testresult. 
@@ -84,7 +85,7 @@ Unittest is able to evaluate the testresult.
          }
      } 
 
-
+###Unit-Test
 The test itself is relatively simple: 
  - Count the Files (so you know how many results to expect - another requirement: If there are new samples put into folder, tests
 and assertions should work without changing code)
