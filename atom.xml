@@ -4,7 +4,7 @@
   <title><![CDATA[Ride the Camel!]]></title>
   <link href="http://Waterback.github.com/atom.xml" rel="self"/>
   <link href="http://Waterback.github.com/"/>
-  <updated>2014-03-19T23:52:37+01:00</updated>
+  <updated>2014-03-19T23:57:29+01:00</updated>
   <id>http://Waterback.github.com/</id>
   <author>
     <name><![CDATA[Martin Huber, innoq Deutschland GmbH]]></name>
@@ -18,7 +18,7 @@
     <link href="http://Waterback.github.com/blog/2014/03/18/flexible-filebased-testing-in-apache-camel/"/>
     <updated>2014-03-18T16:56:00+01:00</updated>
     <id>http://Waterback.github.com/blog/2014/03/18/flexible-filebased-testing-in-apache-camel</id>
-    <content type="html"><![CDATA[<h1>Flexible Filebased-Testing</h1>
+    <content type="html"><![CDATA[<h3>Introduction</h3>
 
 <p>Well&#8230; &#8220;long time no see&#8221;, but finally I get to cameleering through Software.</p>
 
@@ -32,6 +32,8 @@ the Files as new Exchanges to the servlet-input-Endpoint the Working-Route expos
 In the Test-Setup, the Working-Route sends it&#8217;s (transformed) Exchanges to a instantiated Validation-Route (configured to test for the transformed scheme),
 filling in for the behind SOAP-Service.
 The Response that goes through the initiating &#8220;file-reading&#8221;-Route wiretaps also to another instance of the Validation-Route testing for the backward-transformed Scheme.</p>
+
+<h3>File-Route</h3>
 
 <p>The File-Route looks like this: The &#8220;identifier&#8221; in the following code helps to the identify the Scheme to test for in this instance of the route.</p>
 
@@ -69,6 +71,8 @@ a soap-envelope   <br/>
 Isn&#8217;t the &#8220;simple&#8221;-language a cute little thing. See how easy it is to change a file based on an old one.  <br/>
 (</em>9) See *4.s.. Sends the result to the same folder like the original read file.</p>
 
+<h3>Validation-Route</h3>
+
 <p>The Validation-Route has two interesting aspect - the Route that validates against a Scheme. And the errorhandling
 for validation-failures. Validation failures get send to the &#8220;mock:failure&#8221; endpoint. From this MockEndpoint the
 Unittest is able to evaluate the testresult.</p>
@@ -98,6 +102,8 @@ Unittest is able to evaluate the testresult.</p>
      }
  } 
 </code></pre>
+
+<h3>Unit-Test</h3>
 
 <p>The test itself is relatively simple:
  - Count the Files (so you know how many results to expect - another requirement: If there are new samples put into folder, tests
