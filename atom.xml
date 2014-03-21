@@ -4,7 +4,7 @@
   <title><![CDATA[Ride the Camel!]]></title>
   <link href="http://Waterback.github.com/atom.xml" rel="self"/>
   <link href="http://Waterback.github.com/"/>
-  <updated>2014-03-19T23:57:29+01:00</updated>
+  <updated>2014-03-21T10:04:08+01:00</updated>
   <id>http://Waterback.github.com/</id>
   <author>
     <name><![CDATA[Martin Huber, innoq Deutschland GmbH]]></name>
@@ -124,8 +124,9 @@ and assertions should work without changing code)
 <p>It may look a bit tricky and strange not to use java.io.File for this.
 It was just a try, but it worked, so i kept it, because it was the solution, that made the least work.
 You can use a Endpoint-Definition (that I already had for the filereading-route) to look how many exchanges may wait there for me.
-And then I used it to find out how many positive result have to be asserted for a successful test.
-See the following piece of code:</p>
+And then I used it to find out how many positive result have to be asserted for a successful test.</p>
+
+<p>See the following piece of code:</p>
 
 <pre><code>    private int countFiles(String routeId) {
         BrowsableEndpoint browsableEndpoint = (BrowsableEndpoint) camelContext.getEndpoint(
@@ -133,6 +134,9 @@ See the following piece of code:</p>
         return browsableEndpoint.getExchanges().size();
     }
 </code></pre>
+
+<p>The good thing about this implementation is also: it counts only the files the fileroute would also include. So let&#8217;s say you
+have a filefilter in place that takes only the xml-files. The BrowsableEndpoint respects that.</p>
 
 <p>That&#8217;s it folks, hope you find it useful.</p>
 ]]></content>
