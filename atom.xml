@@ -4,7 +4,7 @@
   <title><![CDATA[Ride the Camel!]]></title>
   <link href="http://Waterback.github.com/atom.xml" rel="self"/>
   <link href="http://Waterback.github.com/"/>
-  <updated>2014-03-21T10:04:08+01:00</updated>
+  <updated>2014-03-21T10:20:38+01:00</updated>
   <id>http://Waterback.github.com/</id>
   <author>
     <name><![CDATA[Martin Huber, innoq Deutschland GmbH]]></name>
@@ -20,17 +20,21 @@
     <id>http://Waterback.github.com/blog/2014/03/18/flexible-filebased-testing-in-apache-camel</id>
     <content type="html"><![CDATA[<h3>Introduction</h3>
 
-<p>Well&#8230; &#8220;long time no see&#8221;, but finally I get to cameleering through Software.</p>
+<p>Well it&#8217;s been &#8220;long time no see&#8221;, but finally I got to do some cameleering again ;-).</p>
 
-<p>For my Camel-Routes I used a Test-Setup, I came to think, it may be worth sharing.</p>
+<p>In my most recent project, I used a Test-Setup for testing a Camel-Route, I came to think, it may be worth sharing:</p>
 
-<p>The Camel-Route that is to be tested (from now on called: Working-Route) is actually not important. But you need to know, that the route is servlet that wraps
-SOAP-Service-Calls. It transforms schemes and the Transformation-Result at the output-endpoint has to be validated.</p>
+<p>So, Let&#8217;s Start:</p>
 
-<p>For the Unittest of the Camel-Route I have some Samples organized in Files. The idea is now to read the files with another route and send them to
+<p>The actual work of Camel-Route that is to be tested (from now on called: Working-Route) is actually not important to understand the blog.
+But you need to know, that the route is servlet that wraps
+SOAP-Service-Calls.
+It transforms schemes and the Transformation-Result at the output-endpoint has to be validated.</p>
+
+<p>For the Unittest of the Camel-Route I have some Testsamples organized in Files. The idea is now to read the files with another route and send them to
 the Files as new Exchanges to the servlet-input-Endpoint the Working-Route exposes.
 In the Test-Setup, the Working-Route sends it&#8217;s (transformed) Exchanges to a instantiated Validation-Route (configured to test for the transformed scheme),
-filling in for the behind SOAP-Service.
+filling in for the SOAP-Service behind.
 The Response that goes through the initiating &#8220;file-reading&#8221;-Route wiretaps also to another instance of the Validation-Route testing for the backward-transformed Scheme.</p>
 
 <h3>File-Route</h3>
@@ -55,7 +59,7 @@ The Response that goes through the initiating &#8220;file-reading&#8221;-Route w
 </code></pre>
 
 <p>Explanation:  <br/>
-(<em>1) The Fileroute is defined to read from a &#8220;routefolder&#8221; but doesn&#8217;t change or remove Files (like the Camel-File-Consumer does in default)  <br/>
+(<em>1) The Fileroute is defined to read from a &#8220;routefolder&#8221; but doesn&#8217;t change or remove files (like the Camel-File-Consumer would in default)  <br/>
 A filter makes sure only Testfiles are read. If noop is on, the file-component automatically uses a idempotent-repository to ensure the same file
 is not read more than once.  <br/>
 (</em>2) Any instance of this Route is not active from the get-go. Each Unit-Test uses its own folder, starts the correspondent Route, so only the folder with the associated
